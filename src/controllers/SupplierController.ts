@@ -14,7 +14,7 @@ class SupplierController {
   }
 
   async createSupplier(request: FastifyRequest<{ Body: supplierInterface }>) {
-    const { nome, dataInicio } = request.body;
+    // const { nome, dataInicio } = request.body;
     // request.body.dataInicio = new Date(dataInicio);
     const createSupplier = await prisma.fornecedor.create({
       data: request.body,

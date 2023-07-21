@@ -13,7 +13,7 @@ model cliente {
   email          String
   telefone       String
   responsavel    String
-  inicioContrato DateTime @default(now())
+  inicioContrato String
   
   produtoCliente produtoCliente[] 
   usuario        usuario?
@@ -58,7 +58,7 @@ model financeiro {
   base              Int
   custoTecnico      Int
   liquido           Int  
-  dataPreco         DateTime @default(now())
+  dataPreco         String
 
   produtos produto[]
 }
