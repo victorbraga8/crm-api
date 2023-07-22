@@ -24,11 +24,11 @@ model produtoCliente {
   id         String   @id @default(uuid())
   produto_id String
   cliente_id String
-  vencimento DateTime
-  renovacao  DateTime
+  vencimento String
+  renovacao  String
   
   produto produto? @relation(fields: [produto_id], references: [id])
-  cliente cliente  @relation(fields: [cliente_id], references: [id])
+  cliente cliente?  @relation(fields: [cliente_id], references: [id])
   
 }
 
@@ -47,7 +47,7 @@ model produto {
 
 model fornecedor {
   id         String   @id @default(uuid())
-  nome       String 
+  nome       String   @unique
   dataInicio String
 
   produto produto[]
