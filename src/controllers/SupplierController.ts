@@ -1,6 +1,5 @@
 import { FastifyRequest } from "fastify";
 import { prisma } from "../lib/prisma";
-import { request } from "http";
 
 interface supplierInterface {
   id: string;
