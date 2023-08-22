@@ -25,13 +25,18 @@ class ProductController {
     return products;
   }
   async createProduct(request: FastifyRequest<{ Body: productInterface }>) {
+    console.log(request.body);
+    const data = {
+      nome: request.body.nome,
+      financeiro_id: "Teste",
+      fornecedor_id: "Teste",
+    };
     const createProduct = await prisma.produto.create({
-      data: request.body,
+      data: data,
     });
     return createProduct;
   }
   async getProduct(request: FastifyRequest<{ Body: productInterface }>) {
-    // getProduct = async (request: { body: productInterface }) => {
     if (Object.keys(request.body).length > 0) {
       const { id, nome, fornecedor_id, financeiro_id } = request.body;
       const product = await prisma.produto.findMany({
@@ -42,6 +47,11 @@ class ProductController {
             { financeiro_id: financeiro_id },
             { fornecedor_id: fornecedor_id },
           ],
+        },
+        include: {
+          clientes: true,
+          financeiro: true,
+          fornecedor: true,
         },
       });
 

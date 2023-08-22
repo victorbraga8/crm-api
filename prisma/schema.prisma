@@ -20,12 +20,20 @@ model cliente {
   
 }
 
+model usuario {
+  id         String  @id @default(uuid())
+  login      String
+  senha      String
+  cliente_id String  @unique
+  cliente    cliente? @relation(fields: [cliente_id], references: [id])
+}
+
 model produtoCliente {
   id         String   @id @default(uuid())
   produto_id String
   cliente_id String
-  vencimento String
-  renovacao  String
+  vencimento String?
+  renovacao  String?
   
   produto produto? @relation(fields: [produto_id], references: [id])
   cliente cliente?  @relation(fields: [cliente_id], references: [id])
@@ -35,15 +43,14 @@ model produtoCliente {
 model produto {
   id              String @id @default(uuid())
   nome            String
-  fornecedor_id   String @default("")
-  financeiro_id   String @default("")
+  fornecedor_id   String
+  financeiro_id   String
 
   clientes produtoCliente[]
-  financeiro financeiro? @relation(fields: [financeiro_id], references: [id])
-  fornecedor fornecedor? @relation(fields: [fornecedor_id], references: [id])
+
+  financeiro financeiro? @relation(fields: [financeiro_id], references: [id])  
+  fornecedor fornecedor? @relation(fields: [fornecedor_id], references: [id])  
 }
-
-
 
 model fornecedor {
   id         String   @id @default(uuid())
@@ -63,10 +70,3 @@ model financeiro {
   produtos produto[]
 }
 
-model usuario {
-  id         String  @id @default(uuid())
-  login      String
-  senha      String
-  cliente_id String  @unique
-  cliente    cliente? @relation(fields: [cliente_id], references: [id])
-}
