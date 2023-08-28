@@ -6,6 +6,6 @@ export async function supplierRoutes(app: FastifyInstance) {
   app.get("/supplier", supplierController.getAllSuppliers);
   app.get("/supplier/:id", supplierController.getSupplier);
   app.post("/supplier", supplierController.createSupplier);
-  app.put("/supplier", supplierController.updateSupplier);
-  app.delete("/supplier/:id", supplierController.deleteSupplier);
+  app.put("/supplier-update", supplierController.updateSupplier);
+  app.delete("/supplier-delete/:id", supplierController.deleteSupplier);
 }
