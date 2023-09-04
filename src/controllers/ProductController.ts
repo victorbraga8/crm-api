@@ -36,17 +36,14 @@ class ProductController {
     });
     return createProduct;
   }
-  async getProduct(request: FastifyRequest<{ Body: productInterface }>) {
-    if (Object.keys(request.body).length > 0) {
-      const { id, nome, fornecedor_id, financeiro_id } = request.body;
-      const product = await prisma.produto.findMany({
+  async getProduct(
+    request: FastifyRequest<{ Params: productInterface }>,
+    respose: any
+  ) {
+    try {
+      const product = await prisma.produto.findUnique({
         where: {
-          OR: [
-            { id: id },
-            { nome: nome },
-            { financeiro_id: financeiro_id },
-            { fornecedor_id: fornecedor_id },
-          ],
+          id: request.params.id,
         },
         include: {
           clientes: true,
@@ -56,8 +53,10 @@ class ProductController {
       });
 
       return product;
-    } else {
-      return { msg: "Produto não encontrado." };
+    } catch (error) {
+      return respose
+        .status(404)
+        .json({ msg: "Produto não encontrado ou inexistente." });
     }
   }
   async updateProduct(

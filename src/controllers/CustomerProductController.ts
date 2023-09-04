@@ -36,6 +36,77 @@ class CustomerProductController {
 
     return customerProduct;
   }
+
+  async getAllCustomerProduct() {
+    const customerProduct = await prisma.produtoCliente.findMany({
+      include: {
+        cliente: true,
+        produto: true,
+      },
+    });
+
+    return customerProduct;
+  }
+
+  async getCustomerProduct(
+    request: FastifyRequest<{ Params: customerProductInterface }>,
+    response: any
+  ) {
+    try {
+      const customerProduct = await prisma.produtoCliente.findFirstOrThrow({
+        where: {
+          cliente_id: request.params.cliente_id,
+        },
+      });
+      return customerProduct;
+    } catch (error) {
+      return response
+        .status(404)
+        .send({ msg: "Cliente não possui produtos vinculados" });
+    }
+  }
+
+  async updateCustomerProduct(
+    request: FastifyRequest<{ Body: customerProductInterface }>,
+    response: any
+  ) {
+    try {
+      const customerProduct = await prisma.produtoCliente.findUnique({
+        where: {
+          id: request.body.id,
+        },
+      });
+
+      const updateCustomerProduct = await prisma.produtoCliente.update({
+        where: { id: request.body.id },
+        data: request.body,
+      });
+
+      return updateCustomerProduct;
+    } catch (error) {
+      return response
+        .status(404)
+        .send({ msg: "Relação Inexistente ou impossivel de atualizar" });
+    }
+  }
+
+  async deleteCustomerProduct(
+    request: FastifyRequest<{ Params: customerProductInterface }>,
+    response: any
+  ) {
+    try {
+      const deleteCustomerProduct = await prisma.produtoCliente.delete({
+        where: {
+          id: request.params.id,
+        },
+      });
+      return response.status(202).send({ msg: "Relação Excluida" });
+    } catch (error) {
+      return response
+        .status(404)
+        .send({ msg: "Relação Inexistente ou Excluida Anteriormente" });
+    }
+  }
 }
 
 const customerProductController = new CustomerProductController();

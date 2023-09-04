@@ -1,5 +1,4 @@
 import fastify from "fastify";
-import { prisma } from "./lib/prisma";
 
 import { userRoutes } from "./routes/user";
 import { productRoutes } from "./routes/product";
