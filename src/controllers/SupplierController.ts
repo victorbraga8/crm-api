@@ -4,7 +4,7 @@ import { prisma } from "../lib/prisma";
 interface supplierInterface {
   id: string;
   nome: string;
-  dataInicio: string;
+  dataInicio: string | Date;
 }
 
 class SupplierController {

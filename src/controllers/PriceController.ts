@@ -6,7 +6,7 @@ interface priceInterface {
   base: number;
   custoTecnico: number;
   liquido: number;
-  dataPreco: string;
+  dataPreco: string | Date;
 }
 
 class PriceController {
@@ -32,6 +32,7 @@ class PriceController {
   }
 
   async createPrice(request: FastifyRequest<{ Body: priceInterface }>) {
+    console.log(request.body);
     const price = await prisma.financeiro.create({
       data: request.body,
     });
@@ -71,6 +72,7 @@ class PriceController {
           id: request.params.id,
         },
       });
+      response.status(200).send({ msg: "Preço Deletado" });
     } catch (error) {
       response.status(404).send({ msg: "Preço não encontrado ou já deletado" });
     }

@@ -25,14 +25,8 @@ class ProductController {
     return products;
   }
   async createProduct(request: FastifyRequest<{ Body: productInterface }>) {
-    console.log(request.body);
-    const data = {
-      nome: request.body.nome,
-      financeiro_id: "Teste",
-      fornecedor_id: "Teste",
-    };
     const createProduct = await prisma.produto.create({
-      data: data,
+      data: request.body,
     });
     return createProduct;
   }

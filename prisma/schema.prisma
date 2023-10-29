@@ -3,70 +3,68 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model cliente {
-  id             String   @id @default(uuid())
+  id             String           @id @default(uuid())
   nome           String
   email          String
   telefone       String
   responsavel    String
-  inicioContrato String
-  
-  produtoCliente produtoCliente[] 
+  inicioContrato String?
+  produtoCliente produtoCliente[]
   usuario        usuario?
-  
 }
 
 model usuario {
-  id         String  @id @default(uuid())
+  id         String   @id @default(uuid())
   login      String
   senha      String
-  cliente_id String  @unique
+  cliente_id String?  @unique
   cliente    cliente? @relation(fields: [cliente_id], references: [id])
 }
 
 model produtoCliente {
-  id         String   @id @default(uuid())
+  id         String  @id @default(uuid())
   produto_id String
   cliente_id String
   vencimento String?
   renovacao  String?
-  
-  produto produto? @relation(fields: [produto_id], references: [id])
-  cliente cliente?  @relation(fields: [cliente_id], references: [id])
-  
+  cliente    cliente @relation(fields: [cliente_id], references: [id])
+  produto    produto @relation(fields: [produto_id], references: [id])
+
+  @@index([cliente_id], map: "produtoCliente_cliente_id_fkey")
+  @@index([produto_id], map: "produtoCliente_produto_id_fkey")
 }
 
 model produto {
-  id              String @id @default(uuid())
-  nome            String
-  fornecedor_id   String
-  financeiro_id   String
+  id            String           @id @default(uuid())
+  nome          String
+  fornecedor_id String?
+  financeiro_id String?
+  financeiro    financeiro?      @relation("produtoToFinanceiro", fields: [financeiro_id], references: [id])
+  fornecedor    fornecedor?      @relation("produtoToFornecedor", fields: [fornecedor_id], references: [id])
+  clientes      produtoCliente[]
 
-  clientes produtoCliente[]
-
-  financeiro financeiro? @relation(fields: [financeiro_id], references: [id])  
-  fornecedor fornecedor? @relation(fields: [fornecedor_id], references: [id])  
+  @@index([financeiro_id], map: "produto_financeiro_id_fkey")
+  @@index([fornecedor_id], map: "produto_fornecedor_id_fkey")
 }
 
 model fornecedor {
-  id         String   @id @default(uuid())
-  nome       String   @unique
-  dataInicio String
-
-  produto produto[]
+  id         String    @id @default(uuid())
+  nome       String
+  dataInicio DateTime  @default(now()) @db.Date
+  produtos   produto[] @relation("produtoToFornecedor")
 }
 
 model financeiro {
-  id                String   @id @default(uuid())
-  base              Int
-  custoTecnico      Int
-  liquido           Int  
-  dataPreco         String
-
-  produtos produto[]
+  id           String    @id @default(uuid())
+  base         Int
+  custoTecnico Int
+  liquido      Int
+  dataPreco    DateTime  @default(now()) @map("dataPreco")
+  produtos     produto[] @relation("produtoToFinanceiro")
 }
-

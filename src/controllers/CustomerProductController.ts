@@ -57,6 +57,10 @@ class CustomerProductController {
         where: {
           cliente_id: request.params.cliente_id,
         },
+        include: {
+          cliente: true,
+          produto: true,
+        },
       });
       return customerProduct;
     } catch (error) {
