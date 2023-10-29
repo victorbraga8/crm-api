@@ -65,6 +65,6 @@ model financeiro {
   base         Int
   custoTecnico Int
   liquido      Int
-  dataPreco    DateTime  @default(now()) @map("dataPreco")
+  dataPreco    DateTime  @default(now()) @db.Date
   produtos     produto[] @relation("produtoToFinanceiro")
 }
